@@ -1,0 +1,51 @@
+import { createRouter, createWebHistory } from 'vue-router'
+
+//importing the files
+import LandingPage from '@/components/LandingPage.vue'
+import Admin from '@/components/Admin.vue'
+import Books from '@/components/Books.vue'
+import Cart from '@/components/Cart.vue'
+import Library from '@/components/Library.vue'
+import Profile from '@/components/Profile.vue'
+import ViewBook from '@/components/ViewBook.vue'
+import Wishlist from '@/components/Wishlist.vue'
+
+const router = createRouter({
+  history: createWebHistory(import.meta.env.BASE_URL),
+  routes: [
+    {              //empty path so that it's the first one that opens
+      path: '/',    
+      component: LandingPage
+    },
+    {
+      path: '/admin',
+      component: Admin
+    },
+    {
+      path: '/books',
+      component: Books
+    },
+    {
+      path: '/cart',
+      component: Cart
+    },
+    {
+      path: '/library',
+      component: Library
+    },
+    {
+      path: '/profile',
+      component: Profile
+    },
+    {
+      path: '/view_book',
+      component: ViewBook
+    },
+    {
+      path: '/wishlist',
+      component: Wishlist
+    }
+  ],
+})
+
+export default router
