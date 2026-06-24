@@ -51,7 +51,7 @@ function register() {
         <v-row>
             <v-col>
                 <v-card max-width="80%" class="bg-secondary">
-                    <v-img src="/FullLogo.jpg" height="100" width="200" class="mt-4"></v-img>
+                    <v-img src="/public/logo3.png" height="100" width="200" class="mt-4"></v-img>
                     <v-card-title class="text-center">Sign Up</v-card-title>
                     <v-divider></v-divider>
                     

@@ -1,11 +1,29 @@
 <script setup>
 import {ref} from 'vue'
 import { useBooksStore } from '../stores/books'
+import { useUsersStore } from '../stores/users'
+import { useOrdersStore } from '../stores/orders'
 
 const booksStore = useBooksStore()
+const usersStore = useUsersStore()
+const ordersStore = useOrdersStore()
 const books= booksStore.books
-const users = {}
-const orders = {}
+const users = usersStore.users
+const orders = ordersStore.orders
+
+const allOrders = Object.values(orders).map(order => { //map helps to access each nested object
+    const book = Object.values(books).find(book => book.id === order.bookId);
+    const user = Object.values(users).find(user => user.id === order.customerId);
+  return {
+    ...order,
+
+    // what you're evaluating ? assigned : tenary operator is the same as conditional statement
+    customer: user ? user.firstname + ' '+  user.lastname: 'Unknown User',
+    bookName: book ? book.name : 'Unknown Book',
+    price: book ? book.price : '0'
+    
+  };
+});
 
 const tab = ref(null)
 
@@ -106,12 +124,12 @@ const tab = ref(null)
                                 </thead>
                                 <tbody>
                                     <tr v-for="item in users" :key="item.id" >
-                                        <td>{{ item.firstname}}</td>
+                                        <td class="text-left">{{ item.firstname}}</td>
                                         <td>{{ item.lastname }}</td>
                                         <td>{{ item.email }}</td>
                                         <td>{{item.phone }}</td>
                                         <td>{{item.location}}</td>
-                                        <td>{{item.address}}</td>
+                                        <td>{{item.adress}}</td>
                                         <td> <v-btn color="warning" size="small"><v-icon icon="mdi-account-check" ></v-icon> View</v-btn> </td>
                                         <td> <v-btn color="primary" size="small" @click="editUser(item)"><v-icon icon="mdi-pencil" ></v-icon> Edit</v-btn> </td>
                                         <td> <v-btn color="error" size="small"><v-icon icon="mdi-delete" ></v-icon> Delete</v-btn> </td>
@@ -151,17 +169,19 @@ const tab = ref(null)
                                         <th class="text-left"> Customer</th>
                                         <th class="text-left"> Book </th>
                                         <th class="text-left"> Price </th>
+                                        <th class="text-left"> Quantity </th>
                                         <th class="text-left"> Total </th>
                                         <th class="text-left"> Status </th>
                                         <th class="text-center" colspan="3"> Action </th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr v-for="item in orders" :key="item.id" >
+                                    <tr v-for="item in allOrders" :key="item.id" >
                                         <td>{{ item.customer}}</td>
                                         <td>{{ item.book }}</td>
                                         <td>{{ item.price }}</td>
-                                        <td>{{item.total }}</td>
+                                        <td>{{ item.quantity }}</td>
+                                        <td>{{item.totalPaid }}</td>
                                         <td>{{item.status }}</td>
                                         <td> <v-btn color="warning" size="small"><v-icon icon="mdi-account-check" ></v-icon> View</v-btn> </td>
                                         <td> <v-btn color="primary" size="small" @click="editOrder(item)"><v-icon icon="mdi-pencil" ></v-icon> Edit</v-btn> </td>

@@ -1,7 +1,7 @@
 //login
 <script setup>
 import { ref } from 'vue'
-import{useAuth} from '@/services/auth.js'
+import{useAuth} from '../services/auth.js'
 import { useRouter } from "vue-router";
 const router = useRouter(); 
 
