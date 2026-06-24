@@ -31,7 +31,7 @@ const cart = useCartStore().cart
                     <v-row>
                         <v-col md="4" class="text-center">
                             <v-avatar color="grey" rounded="0" size="150" >
-                                <v-img :src="item.image" ></v-img>
+                                <v-img :src="item.image" max-height="100%" max-width="100%" variant="elevated"></v-img>
                             </v-avatar>
                         </v-col>
                         <v-col md="6" class="text-right">

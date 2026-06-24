@@ -61,7 +61,7 @@
                 <v-img src="/public/homebody.jpg" cover></v-img>
                 <v-card-title>Home Body</v-card-title>
                 <v-card-subtitle>ksh 1499</v-card-subtitle>
-                <v-btn @click="buy(book)" class="bg-primary" variant="elevated">Add to Cart</v-btn>
+                <v-btn @click="buy(book)" class="bg-primary" variant="elevated" mb="0">Add to Cart</v-btn>
             </v-card>
         </v-col>
         <v-col></v-col>

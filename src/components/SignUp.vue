@@ -1,5 +1,11 @@
 <script setup>
+
 import { ref } from 'vue'
+import{useAuth} from '@/services/auth.js'
+import { useRouter } from "vue-router"
+const router = useRouter();
+
+const { signup } = useAuth()
 
 const showPassword = ref(false)
 const password = ref(null) 
@@ -30,12 +36,12 @@ function register() {
         location: location.value,
         address: address.value,
         password: password.value,
+        role:2,
     }
-    try {
-        localStorage.setItem("user", JSON.stringify(data))
-    } catch {
-        console.log("Error signing up:")
-    }
+    signup(data)
+    router.push('/login').then(()=>{
+        router.go(0)
+    });
 }
 
 </script>
@@ -45,6 +51,9 @@ function register() {
         <v-row>
             <v-col>
                 <v-card max-width="80%" class="bg-secondary">
+                    <v-img src="/FullLogo.jpg" height="100" width="200" class="mt-4"></v-img>
+                    <v-card-title class="text-center">Sign Up</v-card-title>
+                    <v-divider></v-divider>
                     
                 <v-form class="ma-10 mb-6">
                     <v-row >
@@ -121,9 +130,11 @@ function register() {
                         <v-col md="6" class="text-center">
                             <v-btn @click="register()" elevation="4" variant="elevated" class="bg-primary"> Sign Up </v-btn>
                         </v-col>
-                        <v-col md="6" class="text-center">
-                            <v-btn >Already have an account?</v-btn>
-                        </v-col>
+                        <v-col md="6">
+                        <div>Already have an account? </div>
+                        <router-link to="/login">Login</router-link>
+                    </v-col>
+                        
                     </v-row>
                 </v-form>
                 </v-card>
@@ -131,3 +142,9 @@ function register() {
         </v-row>
     </v-container>
 </template>
+
+//data modelling in programming
+
+//vue 3
+//reactivity, v-model, data model object
+//give example for wishlist
