@@ -3,6 +3,7 @@ import {ref} from 'vue'
 import { useBooksStore } from '../stores/books'
 import { useUsersStore } from '../stores/users'
 import { useOrdersStore } from '../stores/orders'
+import { forAliasRE } from '@vue/compiler-core'
 
 const booksStore = useBooksStore()
 const usersStore = useUsersStore()
@@ -26,6 +27,156 @@ const allOrders = Object.values(orders).map(order => { //map helps to access eac
 });
 
 const tab = ref(null)
+const showAddBookDialog = ref(false)
+const showEditBookDialog = ref(false)
+const showAddUserDialog = ref(false)
+const showEditUserDialog = ref(false)
+
+//books
+//1 create models
+//2 create a function to add a new book
+//3 create the add book form
+
+//books models
+const bookId = ref(null)
+const bookName = ref(null)
+const price = ref(null)
+const description= ref(null)
+const author= ref(null)
+const long_description= ref(null)
+const image = ref(null)
+const genre = ref(null)
+const rating = ref(null)
+
+// add new book
+function addBook(){
+    const bookData ={
+        bookId: bookId.value,
+        bookName: bookName.value,
+        price: price.value,
+        description: description.value,
+        long_description: long_description.value,
+        genre: genre.value,
+        image: image.value,
+        author: author.value,
+        rating: rating.value
+    }
+    const updateBook = {
+        ...books,
+        12: bookData
+    }
+}
+//edit book
+function editBook(book){
+    bookId.value = book.id
+    bookName.value = book.name
+    price.value = book.price
+    description.value = book.description
+    long_description.value = book.long_description
+    genre.value = book.genre
+    image.value = book.image
+    author.value = book.author
+    rating.value = book.rating
+    showEditBookDialog.value = true
+
+}
+
+function updateBook(){
+    const bookData = {
+        bookId: bookId.value,
+        bookName: bookName.value,
+        price: price.value,
+        description: description.value,
+        long_description: long_description.value,
+        genre: genre.value,
+        image: image.value,
+        author: author.value,
+        rating: rating.value
+         
+    }
+
+    close()
+}
+
+//user models
+const userId = ref(null)
+const firstname = ref(null)
+const lastname = ref(null)
+const email = ref(null)
+const phone = ref(null)
+const location = ref(null)
+const address = ref(null)
+
+//add user
+function addUser(){
+    const data = {
+        userId: userId.value,
+        firstname: firstname.value,
+        lastname: lastname.value,
+        email: email.value,
+        phone: phone.value,
+        location: location.value,
+        address: address.value,
+        password: "0705277925",
+        role:2,
+    }
+
+    close()
+}
+
+//edit user
+function editUser(user){
+    userId.value = user.id
+    firstname.value = user.firstname
+    lastname.value = user.lastname
+    email.value = user.email
+    phone.value = user.phone
+    location.value = user.location
+    address.value = user.address
+    showEditUserDialog.value = true
+}
+
+//update user
+function updateUser(){
+   const data = {
+        userId: userId.value,
+        firstname: firstname.value,
+        lastname: lastname.value,
+        email: email.value,
+        phone: phone.value,
+        location: location.value,
+        address: address.value,
+        password: "0705277925",
+        role:2,
+    }
+    close()
+}
+
+function close(){
+    //books
+    bookId.value = null
+    bookName.value = null
+    price.value = null
+    description. value = null
+    long_description.value = null
+    genre.value = null
+    image.value = null
+    rating.value = null
+    showAddBookDialog.value = false
+    showEditBookDialog.value = false
+
+    //user
+    userId.value = null
+    firstname.value = null
+    lastname.value = null
+    email. value = null
+    phone.value = null
+    location.value = null
+    address.value = null
+    showAddUserDialog.value = false
+    showEditUserDialog = false
+    
+}
 
 </script>
 
@@ -48,7 +199,7 @@ const tab = ref(null)
                                 <div class="text-h6">No books found</div>
                             </v-col>
                             <v-col cols="12" md="6" sm="12" >
-                                <v-btn class="ma-2" color="blue-darken-2" icon="mdi-plus" @click="showAddUserDialog = true"></v-btn>
+                                <v-btn class="ma-2" color="blue-darken-2" icon="mdi-plus" @click="showAddBookDialog = true"></v-btn>
                             </v-col>
                         </v-row>
                     </div>
@@ -56,7 +207,7 @@ const tab = ref(null)
                         <v-container>
                             <v-row>
                                 <v-col cols="12" md="12" sm="12" align="right">
-                                    <v-btn class="ma-2" color="blue-darken-2" icon="mdi-plus" @click="showAddUserDialog = true"></v-btn>
+                                    <v-btn class="ma-2" color="blue-darken-2" icon="mdi-plus" @click="showAddBookDialog = true"></v-btn>
                                 </v-col>
                             </v-row>
                                                     <v-row>
@@ -196,5 +347,212 @@ const tab = ref(null)
                 </v-tabs-window-item>
             </v-tabs-window>
         </v-card>
+        <v-tabs v-model="tab" align-tabs="center" color="primary" >
+                <v-tab :value="1">Books</v-tab>
+                <v-tab :value="2">Users</v-tab>
+                <v-tab :value="3">Orders</v-tab>
+            </v-tabs>
     </v-container>
+   <!-- add book -->
+     <v-dialog v-model="showAddBookDialog" max-width="600">
+        <v-form @submit.prevent >
+            <v-card>
+                <v-card-title class="pa-6">
+                <v-row>
+                        Add Book
+                        <v-spacer></v-spacer>
+                        <v-btn class="ma-2" color="blue-darken-2" icon="mdi-close" @click="close();"></v-btn>
+                    </v-row>
+                </v-card-title>
+                <v-card-text>
+                    <v-row>
+                        <v-col md="6">
+                            <v-text-field label="Book Title" v-model="bookName" required></v-text-field>
+                        </v-col>
+                        <v-col md="6">
+                            <v-text-field label="Author" v-model="author" required></v-text-field>
+                        </v-col>
+                    </v-row>
+                    <v-row>
+                        <v-col md="6">
+                            <v-text-field label="Image" v-model="image" required></v-text-field>
+                        </v-col>
+                        <v-col md="6">
+                            <v-text-field label="Price" v-model="price" required></v-text-field>
+                        </v-col>
+                    </v-row>
+                    <v-row>
+                        <v-col md="12">
+                            <v-textarea label="Short Description" v-model="description" required></v-textarea>
+                        </v-col>
+                    </v-row>
+                    <v-row>
+                        <v-col md="12">
+                            <v-textarea label="Long Description" v-model="long_description" required></v-textarea>
+                        </v-col>
+                    </v-row>
+                    <v-row>
+                        <v-col md="6">
+                            <v-select :items="['Fiction', 'Non Fiction', 'Educational', 'Self Help']" v-model ="genre">
+                            </v-select>
+                        </v-col>
+                    </v-row>
+                </v-card-text>
+                <v-card-actions>
+                    <v-spacer></v-spacer>
+                    <v-btn text="Close" variant="plain" @click="close()" ></v-btn>
+                    <v-btn color="primary"  text="Save" variant="tonal" @click="addBook()" ></v-btn>
+                </v-card-actions>
+            </v-card>
+        </v-form>
+    </v-dialog>
+    <!-- edit book -->
+     <v-dialog v-model="showEditBookDialog" max-width="600">
+        <v-form @submit.prevent >
+            <v-card>
+                <v-card-title class="pa-6">
+                <v-row>
+                        Edit Book
+                        <v-spacer></v-spacer>
+                        <v-btn class="ma-2" color="blue-darken-2" icon="mdi-close" @click="close();"></v-btn>
+                    </v-row>
+                </v-card-title>
+                <v-card-text>
+                    <v-row>
+                        <v-col md="6">
+                            <v-text-field label="Book Title" v-model="bookName" required></v-text-field>
+                        </v-col>
+                        <v-col md="6">
+                            <v-text-field label="Author" v-model="author" required></v-text-field>
+                        </v-col>
+                    </v-row>
+                    <v-row>
+                        <v-col md="6">
+                            <v-text-field label="Image" v-model="image" required></v-text-field>
+                        </v-col>
+                        <v-col md="6">
+                            <v-text-field label="Price" v-model="price" required></v-text-field>
+                        </v-col>
+                    </v-row>
+                    <v-row>
+                        <v-col md="12">
+                            <v-textarea label="Short Description" v-model="description" required></v-textarea>
+                        </v-col>
+                    </v-row>
+                    <v-row>
+                        <v-col md="12">
+                            <v-textarea label="Long Description" v-model="long_description" required></v-textarea>
+                        </v-col>
+                    </v-row>
+                    <v-row>
+                        <v-col md="6">
+                            <v-select :items="['Fiction', 'Non Fiction', 'Educational', 'Self Help']" v-model ="genre">
+                            </v-select>
+                        </v-col>
+                    </v-row>
+                </v-card-text>
+                <v-card-actions>
+                    <v-spacer></v-spacer>
+                    <v-btn text="Close" variant="plain" @click="close()" ></v-btn>
+                    <v-btn color="primary"  text="update" variant="tonal" @click="updateBook()" ></v-btn>
+                </v-card-actions>
+            </v-card>
+        </v-form>
+    </v-dialog>
+
+      <!-- Add User -->
+    <v-dialog v-model="showAddUserDialog" max-width="600">
+        <v-form @submit.prevent >
+            <v-card>
+                <v-card-title class="pa-6">
+                <v-row>              
+
+                        Add User
+                        <v-spacer></v-spacer>
+                        <v-btn class="ma-2" color="blue-darken-2" icon="mdi-close" @click="close();"></v-btn>
+                    </v-row>
+                </v-card-title>
+                <v-card-text>
+                    <v-row>
+                        <v-col md="6">
+                            <v-text-field label="First Name" v-model="firstname"></v-text-field>
+                        </v-col>
+                        <v-col md="6">
+                            <v-text-field label="Last Name" v-model="lastname"></v-text-field>
+                        </v-col>
+                    </v-row>
+                    
+                        <v-row>
+                        <v-col md="6">
+                            <v-text-field label="Email" v-model="email"></v-text-field>
+                        </v-col>
+                        <v-col md="6">
+                            <v-text-field label="254722345678" v-model="phone"></v-text-field>
+                        </v-col>
+                    </v-row>
+                    <v-row>
+                        <v-col md="6">
+                            <v-select v-model="location" label="Location" :items="['CBD', 'Madaraka', 'Westlands', 'Buruburu']" variant="outlined" ></v-select>
+                        </v-col>
+                        <v-col md="6">
+                                <v-text-field label="Address" v-model="address"></v-text-field>
+                        </v-col>
+                    </v-row>
+                </v-card-text>
+                <v-card-actions>
+                    <v-spacer></v-spacer>
+                    <v-btn text="Close" variant="plain" @click="close()" ></v-btn>
+                    <v-btn color="primary"  text="Save" variant="tonal" @click="addUser()" ></v-btn>
+                </v-card-actions>
+            </v-card>
+        </v-form>
+    </v-dialog>
+    <!-- EDIT USER -->
+     <v-dialog v-model="showEditUserDialog" max-width="600">
+        <v-form @submit.prevent >
+            <v-card>
+                <v-card-title class="pa-6">
+                <v-row>              
+
+                        Edit User
+                        <v-spacer></v-spacer>
+                        <v-btn class="ma-2" color="blue-darken-2" icon="mdi-close" @click="close();"></v-btn>
+                    </v-row>
+                </v-card-title>
+                <v-card-text>
+                    <v-row>
+                        <v-col md="6">
+                            <v-text-field label="First Name" v-model="firstname"></v-text-field>
+                        </v-col>
+                        <v-col md="6">
+                            <v-text-field label="Last Name" v-model="lastname"></v-text-field>
+                        </v-col>
+                    </v-row>
+                    
+                        <v-row>
+                        <v-col md="6">
+                            <v-text-field label="Email" v-model="email"></v-text-field>
+                        </v-col>
+                        <v-col md="6">
+                            <v-text-field label="254722345678" v-model="phone"></v-text-field>
+                        </v-col>
+                    </v-row>
+                    <v-row>
+                        <v-col md="6">
+                            <v-select v-model="location" label="Location" :items="['CBD', 'Madaraka', 'Westlands', 'Buruburu']" variant="outlined" ></v-select>
+                        </v-col>
+                        <v-col md="6">
+                                <v-text-field label="Address" v-model="address"></v-text-field>
+                        </v-col>
+                    </v-row>
+                </v-card-text>
+                <v-card-actions>
+                    <v-spacer></v-spacer>
+                    <v-btn text="Close" variant="plain" @click="close()" ></v-btn>
+                    <v-btn color="primary"  text="Save" variant="tonal" @click="updateUser()" ></v-btn>
+                </v-card-actions>
+            </v-card>
+        </v-form>
+    </v-dialog>
+
 </template>
