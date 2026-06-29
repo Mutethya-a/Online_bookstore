@@ -3,14 +3,15 @@ import {ref} from 'vue'
 import { useBooksStore } from '../stores/books'
 import { useUsersStore } from '../stores/users'
 import { useOrdersStore } from '../stores/orders'
-import { forAliasRE } from '@vue/compiler-core'
 
 const booksStore = useBooksStore()
-const usersStore = useUsersStore()
-const ordersStore = useOrdersStore()
 const books= booksStore.books
+
+const usersStore = useUsersStore()
 const users = usersStore.users
-const orders = ordersStore.orders
+
+const ordersStore = useOrdersStore()
+const orders= ordersStore.orders
 
 const allOrders = Object.values(orders).map(order => { //map helps to access each nested object
     const book = Object.values(books).find(book => book.id === order.bookId);
@@ -26,7 +27,9 @@ const allOrders = Object.values(orders).map(order => { //map helps to access eac
   };
 });
 
+
 const tab = ref(null)
+const refreshKey=ref(0);
 const showAddBookDialog = ref(false)
 const showEditBookDialog = ref(false)
 const showAddUserDialog = ref(false)
@@ -61,11 +64,11 @@ function addBook(){
         author: author.value,
         rating: rating.value
     }
-    const updateBook = {
-        ...books,
-        12: bookData
-    }
+    //update Books in the store
+    booksStore.addBook(bookData)
+    close()
 }
+
 //edit book
 function editBook(book){
     bookId.value = book.id
@@ -94,9 +97,17 @@ function updateBook(){
         rating: rating.value
          
     }
-
+    booksStore.edit(bookId.value,bookData)  //best to use diff names
     close()
+    refreshKey.value +=1 //auto refresh the page
+
 }
+//delete
+function destroyBook(id){
+    booksStore.deleteBook(id);
+    refreshKey.value+=1;
+}
+
 
 //user models
 const userId = ref(null)
@@ -121,6 +132,8 @@ function addUser(){
         role:2,
     }
 
+    //add user
+    usersStore.addUser(data)
     close()
 }
 
@@ -149,7 +162,16 @@ function updateUser(){
         password: "0705277925",
         role:2,
     }
+    
+    //edit user
+    usersStore.editUser(userId.value,data)
+    refreshKey.value+=1
     close()
+}
+//delete user
+function destroyUser(id){
+    usersStore.deleteUser(id);
+    refreshKey.value +=1
 }
 
 function close(){

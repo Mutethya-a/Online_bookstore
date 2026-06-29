@@ -149,5 +149,49 @@ export const useBooksStore = defineStore('books',  {
            this.selectedBook = payload
        },
    },
-   persist: true,
+   	addBook(payload) {
+            //get the last key in the books object
+            const existingKeys = Object.keys(this.books).map(Number);
+            //below is an if statement to check if the number of existing keys is greater than 0
+            const maxKey = existingKeys.length > 0 ? Math.max(...existingKeys) : 0;
+            const nextKey = maxKey + 1;
+
+            //imsert into object
+            this.books[nextKey] = {
+                ...payload,//date the user puts on the tect field
+                id: nextKey //optional
+            };
+        },
+    edit(id, payload) {
+            //find the book in the object
+            const book = Object.entries(this.books).find(
+                ([key, item]) => item.id === id //compare the ids to make sure they match
+            );
+                //means if theres no book then alert the user
+            if (!book) {
+                console.error(`No book found with id: ${id}`);
+                return;
+            }
+
+            const [objectKey] = book;
+            //replace the existing book data with what was received in payload
+            this.books[objectKey] = {
+                ...this.books[objectKey], //the spread operator allows you to bind it in the object and let you change from there
+                ...payload
+            };
+        }, 
+     deleteBook(id) {
+            const book = Object.entries(this.books).find(
+                ([key, item]) => item.id === id
+            );
+            if (!book) {
+                console.error(`Cannot delete: No book found id: ${id}`);
+                return;
+            }
+
+            const [objectKey] = book;
+
+            delete this.books[objectKey];
+        }
+
 })
